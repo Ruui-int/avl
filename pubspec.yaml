@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   animate_do: ^3.3.4
+  zoom_widget: ^2.0.0
+  logger:
 
 dev_dependencies:
   flutter_test:
