@@ -120,36 +120,6 @@ class ArbolAvl {
     return raiz;
   }
 
-  /* Nodo? _eliminar(Nodo? raiz, String clave) {
-    if (raiz == null) return raiz;
-
-    if (clave.compareTo(raiz.clave) < 0) {
-      raiz.nodoIzquierdo = _eliminar(raiz.nodoIzquierdo, clave);
-    } else if (clave.compareTo(raiz.clave) > 0) {
-      raiz.nodoDerecho = _eliminar(raiz.nodoDerecho, clave);
-    } else {
-      if (raiz.nodoIzquierdo == null || raiz.nodoDerecho == null) {
-        Nodo? temp = raiz.nodoIzquierdo ?? raiz.nodoDerecho;
-        raiz = null;
-        return temp;
-      }
-      Nodo? temp = _encontrarMinimo(raiz.nodoDerecho!);
-      raiz.clave = temp!.clave;
-      raiz.nodoDerecho = _eliminar(raiz.nodoDerecho, temp.clave);
-    }
-
-    raiz.altura = 1 + _maxAltura(raiz.nodoIzquierdo, raiz.nodoDerecho);
-    return _rebalancear(raiz);
-  }
-
-  Nodo? _encontrarMinimo(Nodo raiz) {
-    Nodo actual = raiz;
-    while (actual.nodoIzquierdo != null) {
-      actual = actual.nodoIzquierdo!;
-    }
-    return actual;
-  } */
-
   void imprimirInOrden() {
     _imprimirInOrden(raiz);
   }

@@ -1,6 +1,8 @@
+import 'package:arbol_avl/UI/custom_buttom_bar.dart';
 import 'package:arbol_avl/model/arbol_painter.dart';
 import 'package:arbol_avl/model/avl.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 //import 'package:animate_do/animate_do.dart';
 
 void main() {
@@ -105,6 +107,8 @@ class _MainState extends State<Main> {
               ),
             ),
           ),
+          const SizedBox(height: 50),
+          Center(child: BottomBar()),
         ],
       ),
     );

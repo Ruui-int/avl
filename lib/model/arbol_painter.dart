@@ -1,4 +1,6 @@
 // ignore: file_names
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'nodo.dart';
 import 'avl.dart';
@@ -74,8 +76,7 @@ class ArbolPainter extends CustomPainter {
       } */
       final offsetText = Offset(x - 4, y - 8);
 
-
-      double ajuste = nodo.altura * (ancho / 3);
+      double ajuste = 2 * (ancho / 3);
       double ajusteIzq = 0;
       double ajusteDer = 0;
 
@@ -110,40 +111,44 @@ class ArbolPainter extends CustomPainter {
     }
   }
 
-  double ajustarIzq(Nodo nodo, double ajusteIzq, double ajuste) {
-    if (nodo.nodoIzquierdo != null) {
-      if (balanceFactor(nodo.nodoIzquierdo) == -1 ||
-          balanceFactor(nodo.nodoIzquierdo) == 0 || nodo.nodoIzquierdo!.altura >= 3) {
-        ajusteIzq = ajuste * nodo.nodoIzquierdo!.altura +
-            ajustarIzq(nodo.nodoIzquierdo!, ajusteIzq, ajuste) * 0.8;
-        return ajusteIzq;
-      }
-      return ajusteIzq = ajuste + nodo.nodoDerecho!.altura;
-    }
-    return ajusteIzq;
-  }
-
   double ajustarDer(Nodo nodo, double ajusteDer, double ajuste) {
     if (nodo.nodoDerecho != null) {
-      if (balanceFactor(nodo.nodoDerecho) == 1 ||
-          balanceFactor(nodo.nodoDerecho) >= 0 || 
-          nodo.nodoDerecho!.altura >= 3) {
-         
-          ajusteDer = ajuste * nodo.nodoDerecho!.altura +
-              ajustarDer(nodo.nodoDerecho!, ajusteDer, ajuste) * 0.8;
-          return ajusteDer;
+      if (nodo.nodoDerecho!.nodoIzquierdo != null) {
+
+        return ajusteDer = ajustarDerAux(nodo.nodoDerecho!.nodoIzquierdo!, ajusteDer);
       }
-      return ajusteDer = ajuste + nodo.nodoDerecho!.altura;
     }
-    return ajusteDer;
+    return ajusteDer = ajuste;
   }
 
-  int balanceFactor(Nodo? nodo) {
-    if (nodo == null) return 0;
-    return _altura(nodo.nodoIzquierdo) - _altura(nodo.nodoDerecho);
+  double ajustarDerAux(Nodo nodo, double ajustarDer) {
+    double extra = ajustarDer;
+    extra = diametro * 1.8;
+    extra = extra * 1.6;
+    if (nodo.nodoIzquierdo != null) {
+      extra = extra + ajustarDerAux(nodo.nodoIzquierdo!, extra);
+    }
+    return extra;
   }
 
-  int _altura(Nodo? nodo) {
-    return nodo?.altura ?? 0;
+  double ajustarIzq(Nodo nodo, double ajusteIzq, double ajuste) {
+    if (nodo.nodoIzquierdo != null) {
+      if (nodo.nodoIzquierdo!.nodoDerecho != null) {
+        return ajusteIzq = ajustarDerAux(nodo.nodoIzquierdo!.nodoDerecho!, ajusteIzq);
+      }
+    }
+    return ajusteIzq = ajuste;
   }
+
+  double ajustarIzqAux(Nodo nodo, double ajustarIzq) {
+
+    double extra = ajustarIzq;
+    extra = diametro * 1.8;
+    extra = extra * 1.6;
+    if (nodo.nodoDerecho != null) {
+      extra = (diametro + ajustarDerAux(nodo.nodoDerecho!, extra));
+    }
+    return extra;
+  }
+
 }
