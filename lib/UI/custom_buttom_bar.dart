@@ -1,33 +1,47 @@
 import 'package:arbol_avl/UI/custom_shape.dart';
+import 'package:arbol_avl/main/main.dart';
+import 'package:arbol_avl/model/avl.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class BottomBar extends StatelessWidget {
+  final TextEditingController controller = TextEditingController();
+  late ArbolAvl arbol;
+  double? clave;
+
+  final GlobalKey<MainState> mainKey = GlobalKey<MainState>();
+
+  BottomBar({super.key, required this.arbol});
+
+  void setState() {
+    mainKey.currentState?.cambiarEstado();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200,
+      height: 100,
+      width: 350,
       child: Stack(
         children: [
+          ///// Este positioned contiene a los botones del NavBar
           Positioned(
             top: 25,
             left: 0,
             right: 0,
             child: Material(
               elevation: 30,
-              shadowColor: Colors.black,
+              shadowColor: const Color.fromARGB(255, 63, 75, 120),
               color: Colors.transparent,
+              /* child: ClipPath(
+                clipper: CustomShapeClipper(), */
               child: ClipPath(
                 clipper: CustomShapeClipper(),
                 child: Container(
                   height: 75,
                   width: 400,
                   decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Color.fromARGB(255, 43, 33, 41),
-                        Color.fromARGB(248, 107, 103, 106),
-                      ],
-                    ),
+                    color: Colors.white,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30.0),
                       topRight: Radius.circular(30.0),
@@ -38,67 +52,139 @@ class BottomBar extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        width: 25,
+                      const SizedBox(
+                        width: 5,
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            print('Undo pressed');
-                          },
-                          child: Icon(
-                            Icons.undo,
-                            color: Colors.white,
-                            size: 25,
-                          ),
+
+                      ///Boton Para agregar
+                      IconButton(
+                        onPressed: () {
+                          String claveString = controller.text;
+                          int clave = int.tryParse(claveString) ?? 0;
+                          arbol.insertarNodo(clave); // Insertar nodo
+                          controller.clear();
+                        },
+                        icon: const Icon(
+                          Icons.add,
+                          color: Color.fromARGB(255, 238, 108, 122),
+                          size: 30,
                         ),
                       ),
-                      SizedBox(
-                        width: 210,
+
+                      const SizedBox(
+                        width: 0,
+
+                        ///Botón para eliminar
                       ),
-                      Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            print('Add pressed');
-                          },
-                          child: Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 30,
-                          ),
+                      IconButton(
+                        onPressed: () {
+                          String claveString = controller.text;
+                          int clave = int.tryParse(claveString) ?? 0;
+                          /* if (clave != "") { */
+                          arbol.eliminarNodo(clave);
+                          controller.clear();
+                          /* } */
+                        },
+                        icon: const Icon(
+                          Icons.delete_outline_outlined,
+                          color: Color.fromARGB(255, 33, 40, 89),
+                          size: 30,
                         ),
                       ),
-                      SizedBox(
-                        width: 25,
+
+                      const SizedBox(
+                        width: 140,
+                      ),
+
+                      //Botón para buscar
+                      IconButton(
+                        onPressed: () {
+                          String claveString = controller.text;
+                          int clave = int.tryParse(claveString) ?? 0;
+                          if (claveString != "") {
+                            arbol.buscar(clave);
+                          }
+                          
+                        },
+                        icon: const Icon(
+                          Icons.search,
+                          color: Color.fromARGB(255, 33, 40, 89),
+                          size: 30,
+                        ),
+                      ),
+
+                      //botón para Reiniciar el arbol
+                      IconButton(
+                        onPressed: () {
+                          arbol.resetArbol();
+                          setState();
+                        },
+                        icon: const Icon(
+                          Icons.restart_alt,
+                          color: Color.fromARGB(255, 33, 40, 89),
+                          size: 30,
+                        ),
+                      ),
+
+                      const SizedBox(
+                        width: 5,
                       ),
                     ],
                   ),
                 ),
               ),
+              /* ), */
             ),
           ),
+
+          ///// Este positioned contiene al input text
+
           Positioned(
-            top: 0,
-            left: 122,
-            child: Material(
-              color: Colors.transparent,
-              elevation: 0,
-              child: Container(
-                height: 60,
-                width: 120,
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color.fromARGB(255, 205, 189, 189),
-                      Color.fromARGB(255, 255, 255, 255),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(15.0),
+            top: 6,
+            left: 116,
+            child: Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(top: 20),
+              height: 60,
+              width: 120,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20.0),
+                ),
+              ),
+              child: SizedBox(
+                width: 150,
+                height: 150,
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
+                  controller: controller,
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 33, 40, 89),
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold),
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: '...',
+                    hintStyle: TextStyle(
+                        color: Color.fromARGB(255, 33, 40, 89), fontSize: 30),
                   ),
                 ),
+              ),
+            ),
+          ),
+
+          //Este postioned contiene un pequeño parche para estética
+
+          Positioned(
+            top: 74.5,
+            left: 110,
+            child: Container(
+              height: 10,
+              width: 130,
+              decoration: const BoxDecoration(
+                color: Colors.white,
               ),
             ),
           ),

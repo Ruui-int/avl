@@ -28,36 +28,42 @@ class ArbolPainter extends CustomPainter {
   void pintar(Canvas canvas, double x, double y, Nodo? nodo) {
     if (nodo != null) {
       Paint circuloBorde = Paint()
-        ..color = const Color(0xff278ea5)
+        ..color = const Color.fromARGB(255, 56, 71, 98)
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5;
+        ..strokeWidth = 3;
 
       Paint circuloBordeUltimo = Paint()
-        ..color = const Color.fromARGB(255, 214, 2, 2)
+        ..color = const Color.fromARGB(255, 238, 108, 122)
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5;
+        ..strokeWidth = 3;
+
+      Paint circuloBordeBuscanodo = Paint()
+        ..color = Color.fromARGB(255, 217, 179, 13)
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3;
 
       Paint circulo = Paint()
-        ..color = const Color.fromARGB(255, 255, 255, 255)
+        ..color = const Color.fromARGB(255, 247, 248, 250)
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.fill
         ..strokeWidth = 0;
 
       Paint linea = Paint()
-        ..color = const Color.fromARGB(255, 210, 67, 5)
+        ..color = Color.fromARGB(255, 71, 147, 151)
         ..strokeCap = StrokeCap.round
-        ..strokeWidth = 1.5;
+        ..strokeWidth = 3;
 
       const textStyle = TextStyle(
-        color: Color(0xff1f4287),
-        fontSize: 14,
+        color: Color.fromARGB(255, 56, 71, 98),
+        fontSize: 25,
         fontWeight: FontWeight.bold,
       );
 
       final textSpan = TextSpan(
-        text: nodo.clave,
+        text: nodo.clave.toString(),
         style: textStyle,
       );
 
@@ -71,10 +77,17 @@ class ArbolPainter extends CustomPainter {
         maxWidth: x,
       );
 
-      /* if (textSpan.length == 1){
-        
-      } */
-      final offsetText = Offset(x - 4, y - 8);
+      var offsetText = Offset(x - 30, y - 14);
+
+      if (nodo.clave.toString().length == 1) {
+        offsetText = Offset(x - 6.5, y - 14);
+      }
+      if (nodo.clave.toString().length == 2) {
+        offsetText = Offset(x - 14, y - 14);
+      }
+      if (nodo.clave.toString().length == 3) {
+        offsetText = Offset(x - 21, y - 14);
+      }
 
       double ajuste = 2 * (ancho / 3);
       double ajusteIzq = 0;
@@ -106,6 +119,14 @@ class ArbolPainter extends CustomPainter {
         canvas.drawCircle(Offset(x, y), diametro, circuloBordeUltimo);
       }
 
+      void PintarBuscando(Nodo? nodo) {
+        if (nodo != null) {
+          if (nodo.buscando) {
+            canvas.drawCircle(Offset(x, y), diametro, circuloBordeBuscanodo);
+          } canvas.drawCircle(Offset(x, y), diametro, circuloBorde);
+        }
+      }
+
       pintar(canvas, x - ancho - ajusteIzq, y + ancho + 35, nodo.nodoIzquierdo);
       pintar(canvas, x + ancho + ajusteDer, y + ancho + 35, nodo.nodoDerecho);
     }
@@ -114,8 +135,8 @@ class ArbolPainter extends CustomPainter {
   double ajustarDer(Nodo nodo, double ajusteDer, double ajuste) {
     if (nodo.nodoDerecho != null) {
       if (nodo.nodoDerecho!.nodoIzquierdo != null) {
-
-        return ajusteDer = ajustarDerAux(nodo.nodoDerecho!.nodoIzquierdo!, ajusteDer);
+        return ajusteDer =
+            ajustarDerAux(nodo.nodoDerecho!.nodoIzquierdo!, ajusteDer);
       }
     }
     return ajusteDer = ajuste;
@@ -124,7 +145,7 @@ class ArbolPainter extends CustomPainter {
   double ajustarDerAux(Nodo nodo, double ajustarDer) {
     double extra = ajustarDer;
     extra = diametro * 1.8;
-    extra = extra * 1.6;
+    extra = extra * 1.4;
     if (nodo.nodoIzquierdo != null) {
       extra = extra + ajustarDerAux(nodo.nodoIzquierdo!, extra);
     }
@@ -134,21 +155,20 @@ class ArbolPainter extends CustomPainter {
   double ajustarIzq(Nodo nodo, double ajusteIzq, double ajuste) {
     if (nodo.nodoIzquierdo != null) {
       if (nodo.nodoIzquierdo!.nodoDerecho != null) {
-        return ajusteIzq = ajustarDerAux(nodo.nodoIzquierdo!.nodoDerecho!, ajusteIzq);
+        return ajusteIzq =
+            ajustarDerAux(nodo.nodoIzquierdo!.nodoDerecho!, ajusteIzq);
       }
     }
     return ajusteIzq = ajuste;
   }
 
   double ajustarIzqAux(Nodo nodo, double ajustarIzq) {
-
     double extra = ajustarIzq;
     extra = diametro * 1.8;
-    extra = extra * 1.6;
+    extra = extra * 1.4;
     if (nodo.nodoDerecho != null) {
       extra = (diametro + ajustarDerAux(nodo.nodoDerecho!, extra));
     }
     return extra;
   }
-
 }

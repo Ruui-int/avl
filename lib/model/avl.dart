@@ -1,18 +1,25 @@
 import 'dart:math';
+import 'package:arbol_avl/main/main.dart';
 import 'package:arbol_avl/model/nodo.dart';
+import 'dart:async';
 
-class ArbolAvl {
+import 'package:flutter/material.dart';
+
+class ArbolAvl  {
+
+  final GlobalKey<MainState> mainKey = GlobalKey<MainState>();
   Nodo? raiz;
   Nodo? ultimoNodoAgregado;
+  Nodo? buscandoNodo;
 
-  void insertarNodo(String clave) {
+  void insertarNodo(int clave) {
     Nodo nodo = Nodo(clave);
     raiz = _insertar(raiz, nodo);
     if (ultimoNodoAgregado != null) {
-      ultimoNodoAgregado!.ultimo = false; 
+      ultimoNodoAgregado!.ultimo = false;
     }
-    nodo.ultimo = true; 
-    ultimoNodoAgregado = nodo; 
+    nodo.ultimo = true;
+    ultimoNodoAgregado = nodo;
   }
 
   Nodo? _insertar(Nodo? raiz, Nodo nodo) {
@@ -88,11 +95,11 @@ class ArbolAvl {
     return nodoY;
   }
 
-  void eliminarNodo(String clave) {
+  void eliminarNodo(int clave) {
     raiz = _eliminar(raiz, clave);
   }
 
-  Nodo? _eliminar(Nodo? raiz, String clave) {
+  Nodo? _eliminar(Nodo? raiz, int clave) {
     if (raiz == null) return raiz;
 
     if (clave.compareTo(raiz.clave) < 0) {
@@ -126,6 +133,50 @@ class ArbolAvl {
 
   void resetArbol() {
     raiz = null;
+  }
+
+  Future<void> buscar(int clave) async {
+    // Asegurarse de que el nodo anterior se desactive antes de comenzar la búsqueda
+    if (buscandoNodo != null) {
+      buscandoNodo!.buscando = false;
+    }
+    buscandoNodo = await _buscar(raiz, clave);
+  }
+
+  Future<Nodo?> _buscar(Nodo? nodo, int clave) async {
+    int time = 1000;
+
+    if (nodo == null)
+      return null; 
+  
+    if (buscandoNodo != null) {
+      buscandoNodo!.buscando = false;
+    }
+
+    await Future.delayed(Duration(milliseconds: time));
+    actualizarEstado();
+    actualizarEstado();
+    
+    nodo.buscando = true;
+    buscandoNodo = nodo;
+
+    await Future.delayed(Duration(milliseconds: time));
+    actualizarEstado();
+    actualizarEstado();
+    if (clave.compareTo(nodo.clave) < 0) {
+      
+      return await _buscar(nodo.nodoIzquierdo, clave);
+    } else if (clave.compareTo(nodo.clave) > 0) {
+      
+      return await _buscar(nodo.nodoDerecho, clave);
+    } else {
+      
+      return nodo;
+    }
+  }
+
+  void actualizarEstado() {
+    mainKey.currentState?.cambiarEstado();
   }
 
   void _imprimirInOrden(Nodo? nodo) {

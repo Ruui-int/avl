@@ -1,6 +1,8 @@
+import 'package:arbol_avl/UI/custom_appbar.dart';
 import 'package:arbol_avl/UI/custom_buttom_bar.dart';
 import 'package:arbol_avl/model/arbol_painter.dart';
 import 'package:arbol_avl/model/avl.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 //import 'package:animate_do/animate_do.dart';
@@ -20,97 +22,64 @@ class MyApp extends StatelessWidget {
 }
 
 class Main extends StatefulWidget {
+  Main({Key? key}) : super(key: key);
   @override
-  _MainState createState() => _MainState();
+  MainState createState() => MainState();
 }
 
-class _MainState extends State<Main> {
-  final TextEditingController _controller = TextEditingController();
+class MainState extends State<Main> {
   late ArbolAvl arbol;
   late ArbolPainter painter;
 
-  _MainState() {
+  MainState() {
     arbol = ArbolAvl();
     painter = ArbolPainter(arbol);
+  }
+
+  void cambiarEstado() {
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     // Recopilar los nodos del árbol binario
-    
+
     return Scaffold(
+  backgroundColor: const Color.fromARGB(249, 247, 248, 250),
+  body: Stack(
+    children: [
       
-      body: InteractiveViewer(
-        boundaryMargin:
-        const EdgeInsets.all(100000), // Margen adicional alrededor del contenido
+      InteractiveViewer(
+        boundaryMargin: EdgeInsets.all(double.infinity), // Margen adicional alrededor del contenido
         minScale: 0.1, // Escala mínima permitida
         maxScale: 2.0, // Escala máxima permitida
         child: Padding(
-          padding: EdgeInsets.only(top: 55),
+          padding: const EdgeInsets.only(top: 250),
           child: CustomPaint(
             painter: painter,
-            size: Size(MediaQuery.of(context).size.width, 500),
+            size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height),
           ),
         ),
       ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+      // Fondo de la página
+      Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Botón para agregar un nuevo nodo
-          FloatingActionButton(
-            onPressed: () {
-              String clave = _controller.text;
-              arbol.insertarNodo(clave); // Insertar nodo
-              _controller.clear();
-              setState(() {});
-            },
-            child: const Icon(Icons.add),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Botón para eliminar un nodo por clave
-          FloatingActionButton(
-            onPressed: () {
-              setState(() {
-                arbol.imprimirInOrden();
-                arbol.resetArbol();
-              });
-            },
-            child: const Icon(Icons.restart_alt),
-          ),
-          const SizedBox(height: 16),
-
-          // Botón para eliminar un nodo por clave
-          FloatingActionButton(
-            onPressed: () {
-              setState(() {
-              String clave = _controller.text;
-              arbol.eliminarNodo(clave);
-              _controller.clear();                
-              });
-            },
-            child: const Icon(Icons.delete),
-          ),
-
-          const SizedBox(height: 16),
-
-          // Campo de texto para ingresar la clave
-          SizedBox(
-            width: 150,
-            child: TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ingresa una clave',
-              ),
+          CustomAppBar(),
+          SizedBox(height: 115),
+          Expanded( // Para ocupar todo el espacio restante
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child: BottomBar(arbol: arbol),
             ),
           ),
-          const SizedBox(height: 50),
-          Center(child: BottomBar()),
+          SizedBox(height: 10),
         ],
       ),
-    );
+      // InteractiveViewer superpuesto
+      
+    ],
+  ),
+);
   }
 }
