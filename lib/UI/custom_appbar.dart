@@ -1,5 +1,4 @@
 import 'package:arbol_avl/UI/custom_shape.dart';
-import 'package:arbol_avl/model/avl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

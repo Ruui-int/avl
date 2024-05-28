@@ -1,12 +1,11 @@
 // ignore: file_names
 // ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'nodo.dart';
 import 'avl.dart';
 
 class ArbolPainter extends CustomPainter {
-  ArbolAvl arbol = ArbolAvl();
+  late ArbolAvl arbol;
   static const double diametro = 27;
   static const double radio = diametro / 2;
   static const int ancho = 20;
@@ -96,35 +95,31 @@ class ArbolPainter extends CustomPainter {
       if (nodo.nodoIzquierdo != null) {
         ajusteIzq = ajustarIzq(nodo, ajusteIzq, ajuste);
         canvas.drawLine(
-            Offset(x + radio, y - radio),
+            Offset(x, y),
             Offset(
-                x - ancho - ajusteIzq - radio + 5, y + ancho + diametro + 20),
+                x - ancho - ajusteIzq - radio + 10, y + ancho + diametro + 15),
             linea);
       }
 
       if (nodo.nodoDerecho != null) {
         ajusteDer = ajustarDer(nodo, ajusteDer, ajuste);
         canvas.drawLine(
-            Offset(x + radio, y + radio * 0.2),
+            Offset(x, y),
             Offset(
-                x + ancho + ajusteDer + radio - 5, y + ancho + diametro + 15),
+                x + ancho + ajusteDer + radio - 10, y + ancho + diametro + 15),
             linea);
       }
 
       canvas.drawCircle(Offset(x, y), diametro, circulo);
-      canvas.drawCircle(Offset(x, y), diametro, circuloBorde);
+      canvas.drawCircle(Offset(x, y), diametro, circuloBorde); 
       textPainter.paint(canvas, offsetText);
 
       if (nodo.ultimo) {
         canvas.drawCircle(Offset(x, y), diametro, circuloBordeUltimo);
       }
 
-      void PintarBuscando(Nodo? nodo) {
-        if (nodo != null) {
-          if (nodo.buscando) {
-            canvas.drawCircle(Offset(x, y), diametro, circuloBordeBuscanodo);
-          } canvas.drawCircle(Offset(x, y), diametro, circuloBorde);
-        }
+      if (nodo.buscando) {
+        canvas.drawCircle(Offset(x, y), diametro, circuloBordeBuscanodo);
       }
 
       pintar(canvas, x - ancho - ajusteIzq, y + ancho + 35, nodo.nodoIzquierdo);
@@ -144,10 +139,12 @@ class ArbolPainter extends CustomPainter {
 
   double ajustarDerAux(Nodo nodo, double ajustarDer) {
     double extra = ajustarDer;
-    extra = diametro * 1.8;
-    extra = extra * 1.4;
+    extra = diametro * 1.65;
     if (nodo.nodoIzquierdo != null) {
-      extra = extra + ajustarDerAux(nodo.nodoIzquierdo!, extra);
+      extra = extra - 5 + ajustarDerAux(nodo.nodoIzquierdo!, extra);
+    }
+    if (nodo.nodoDerecho != null) {
+      extra = extra - 15 + ajustarDerAux(nodo.nodoDerecho!, extra);
     }
     return extra;
   }
@@ -156,7 +153,7 @@ class ArbolPainter extends CustomPainter {
     if (nodo.nodoIzquierdo != null) {
       if (nodo.nodoIzquierdo!.nodoDerecho != null) {
         return ajusteIzq =
-            ajustarDerAux(nodo.nodoIzquierdo!.nodoDerecho!, ajusteIzq);
+            ajustarIzqAux(nodo.nodoIzquierdo!.nodoDerecho!, ajusteIzq);
       }
     }
     return ajusteIzq = ajuste;
@@ -164,10 +161,13 @@ class ArbolPainter extends CustomPainter {
 
   double ajustarIzqAux(Nodo nodo, double ajustarIzq) {
     double extra = ajustarIzq;
-    extra = diametro * 1.8;
-    extra = extra * 1.4;
+    extra = diametro * 1.65;
+    extra = extra;
     if (nodo.nodoDerecho != null) {
-      extra = (diametro + ajustarDerAux(nodo.nodoDerecho!, extra));
+      extra = extra - 10 + ajustarIzqAux(nodo.nodoDerecho!, extra);
+    }
+    if (nodo.nodoIzquierdo != null) {
+      extra = extra - 15 + ajustarIzqAux(nodo.nodoIzquierdo!, extra);
     }
     return extra;
   }

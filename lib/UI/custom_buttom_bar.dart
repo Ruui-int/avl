@@ -13,9 +13,6 @@ class BottomBar extends StatelessWidget {
 
   BottomBar({super.key, required this.arbol});
 
-  void setState() {
-    mainKey.currentState?.cambiarEstado();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +114,6 @@ class BottomBar extends StatelessWidget {
                       IconButton(
                         onPressed: () {
                           arbol.resetArbol();
-                          setState();
                         },
                         icon: const Icon(
                           Icons.restart_alt,
@@ -134,6 +130,20 @@ class BottomBar extends StatelessWidget {
                 ),
               ),
               /* ), */
+            ),
+          ),
+
+          //Este postioned contiene un pequeño parche para estética
+
+          Positioned(
+            top: 74.5,
+            left: 110,
+            child: Container(
+              height: 10,
+              width: 130,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+              ),
             ),
           ),
 
@@ -171,20 +181,6 @@ class BottomBar extends StatelessWidget {
                         color: Color.fromARGB(255, 33, 40, 89), fontSize: 30),
                   ),
                 ),
-              ),
-            ),
-          ),
-
-          //Este postioned contiene un pequeño parche para estética
-
-          Positioned(
-            top: 74.5,
-            left: 110,
-            child: Container(
-              height: 10,
-              width: 130,
-              decoration: const BoxDecoration(
-                color: Colors.white,
               ),
             ),
           ),

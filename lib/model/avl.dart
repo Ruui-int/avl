@@ -1,13 +1,9 @@
 import 'dart:math';
-import 'package:arbol_avl/main/main.dart';
 import 'package:arbol_avl/model/nodo.dart';
 import 'dart:async';
 
-import 'package:flutter/material.dart';
-
-class ArbolAvl  {
-
-  final GlobalKey<MainState> mainKey = GlobalKey<MainState>();
+class ArbolAvl {
+  
   Nodo? raiz;
   Nodo? ultimoNodoAgregado;
   Nodo? buscandoNodo;
@@ -135,12 +131,12 @@ class ArbolAvl  {
     raiz = null;
   }
 
-  Future<void> buscar(int clave) async {
-    // Asegurarse de que el nodo anterior se desactive antes de comenzar la búsqueda
+  void buscar(int clave) {
     if (buscandoNodo != null) {
       buscandoNodo!.buscando = false;
-    }
-    buscandoNodo = await _buscar(raiz, clave);
+    _buscar(raiz, clave).then((nodoEncontrado) {
+    });
+  }
   }
 
   Future<Nodo?> _buscar(Nodo? nodo, int clave) async {
@@ -176,15 +172,17 @@ class ArbolAvl  {
   }
 
   void actualizarEstado() {
-    mainKey.currentState?.cambiarEstado();
+    /* mainKey.currentState?.cambiarEstado(); */
   }
 
   void _imprimirInOrden(Nodo? nodo) {
     if (nodo != null) {
       _imprimirInOrden(nodo.nodoIzquierdo);
+
       // ignore: avoid_print
       print('${nodo.clave} ');
       _imprimirInOrden(nodo.nodoDerecho);
     }
   }
 }
+
