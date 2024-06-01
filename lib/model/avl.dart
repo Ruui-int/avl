@@ -97,7 +97,7 @@ class ArbolAvl {
 
   void eliminarNodo(int clave) {
     raiz = _eliminar(raiz, clave);
-    onUpdate(); // Notifica a la UI que el árbol ha sido actualizado
+    onUpdate();
   }
 
   Nodo? _eliminar(Nodo? raiz, int clave) {
@@ -128,13 +128,9 @@ class ArbolAvl {
     return raiz;
   }
 
-  void imprimirInOrden() {
-    _imprimirInOrden(raiz);
-  }
-
   void resetArbol() {
     raiz = null;
-    onUpdate(); // Notifica a la UI que el árbol ha sido reseteado
+    onUpdate();
   }
 
   Future<void> buscar(int clave) async {
@@ -142,7 +138,7 @@ class ArbolAvl {
       buscandoNodo!.buscando = false;
     }
     buscandoNodo = await _buscar(raiz, clave);
-    onUpdate(); // Notifica a la UI que el nodo buscado ha cambiado
+    onUpdate();
   }
 
   Future<Nodo?> _buscar(Nodo? nodo, int clave) async {
@@ -158,33 +154,53 @@ class ArbolAvl {
 
     nodo.buscando = true;
     buscandoNodo = nodo;
-    onUpdate(); // Notifica a la UI que el nodo en búsqueda ha cambiado
+    onUpdate();
 
     await Future.delayed(Duration(milliseconds: tiempo));
 
     if (clave.compareTo(nodo.clave) < 0) {
       nodo.buscando = false;
-      onUpdate(); // Notifica a la UI que el nodo en búsqueda ha cambiado
+      onUpdate();
       return await _buscar(nodo.nodoIzquierdo, clave);
     } else if (clave.compareTo(nodo.clave) > 0) {
       nodo.buscando = false;
-      onUpdate(); // Notifica a la UI que el nodo en búsqueda ha cambiado
+      onUpdate();
       return await _buscar(nodo.nodoDerecho, clave);
     } else {
       return nodo;
     }
   }
 
-  void _imprimirInOrden(Nodo? nodo) {
+  // Métodos para recorrer el árbol, todos los metodos
+  // retornan una lista para poder imprimirse usando
+  // los botones desplegables
+  List<int> preOrder(Nodo? nodo) {
+    List<int> resultado = [];
     if (nodo != null) {
-      _imprimirInOrden(nodo.nodoIzquierdo);
-
-      // ignore: avoid_print
-      print('${nodo.clave} ');
-      _imprimirInOrden(nodo.nodoDerecho);
+      resultado.add(nodo.clave);
+      resultado.addAll(preOrder(nodo.nodoIzquierdo));
+      resultado.addAll(preOrder(nodo.nodoDerecho));
     }
+    return resultado;
+  }
 
+  List<int> inOrder(Nodo? nodo) {
+    List<int> resultado = [];
+    if (nodo != null) {
+      resultado.addAll(inOrder(nodo.nodoIzquierdo));
+      resultado.add(nodo.clave);
+      resultado.addAll(inOrder(nodo.nodoDerecho));
+    }
+    return resultado;
+  }
 
-    
+  List<int> postOrder(Nodo? nodo) {
+    List<int> resultado = [];
+    if (nodo != null) {
+      resultado.addAll(postOrder(nodo.nodoIzquierdo));
+      resultado.addAll(postOrder(nodo.nodoDerecho));
+      resultado.add(nodo.clave);
+    }
+    return resultado;
   }
 }

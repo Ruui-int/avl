@@ -74,7 +74,7 @@ class MainState extends State<Main> {
             ],
           ),
 
-          const BotonDesplegable(),
+          BotonDesplegable(arbolAvl: arbol,),
 
         ],  
            

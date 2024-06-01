@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:arbol_avl/model/avl.dart';
 
 class BotonDesplegable extends StatefulWidget {
-  const BotonDesplegable({Key? key}) : super(key: key);
+  final ArbolAvl arbolAvl;
+
+  const BotonDesplegable({Key? key, required this.arbolAvl}) : super(key: key);
 
   @override
   _BotonDesplegableState createState() => _BotonDesplegableState();
@@ -9,39 +12,48 @@ class BotonDesplegable extends StatefulWidget {
 
 class _BotonDesplegableState extends State<BotonDesplegable> {
   bool masBotones = false;
-  bool preOrder = false;
-  bool inOrder = false;
-  bool postOrder = false;
+  String preOrderRecorrido = '';
+  String inOrderRecorrido = '';
+  String postOrderRecorrido = '';
+  bool preOrderVisible = false;
+  bool inOrderVisible = false;
+  bool postOrderVisible = false;
 
-  void _resetFlags() {
-    preOrder = false;
-    inOrder = false;
-    postOrder = false;
+  void togglePreOrder() {
+    setState(() {
+      if (preOrderVisible) {
+        preOrderVisible = false;
+      } else {
+        preOrderRecorrido = widget.arbolAvl.preOrder(widget.arbolAvl.raiz).join(', ');
+        preOrderVisible = true;
+        inOrderVisible = false;
+        postOrderVisible = false;
+      }
+    });
   }
 
-  void _alterna(String button) {
+  void toggleInOrder() {
     setState(() {
-      if (button == 'preOrder') {
-        if (preOrder) {
-          preOrder = false;
-        } else {
-          _resetFlags();
-          preOrder = true;
-        }
-      } else if (button == 'inOrder') {
-        if (inOrder) {
-          inOrder = false;
-        } else {
-          _resetFlags();
-          inOrder = true;
-        }
-      } else if (button == 'postOrder') {
-        if (postOrder) {
-          postOrder = false;
-        } else {
-          _resetFlags();
-          postOrder = true;
-        }
+      if (inOrderVisible) {
+        inOrderVisible = false;
+      } else {
+        inOrderRecorrido = widget.arbolAvl.inOrder(widget.arbolAvl.raiz).join(', ');
+        preOrderVisible = false;
+        inOrderVisible = true;
+        postOrderVisible = false;
+      }
+    });
+  }
+
+  void togglePostOrder() {
+    setState(() {
+      if (postOrderVisible) {
+        postOrderVisible = false;
+      } else {
+        postOrderRecorrido = widget.arbolAvl.postOrder(widget.arbolAvl.raiz).join(', ');
+        preOrderVisible = false;
+        inOrderVisible = false;
+        postOrderVisible = true;
       }
     });
   }
@@ -50,34 +62,82 @@ class _BotonDesplegableState extends State<BotonDesplegable> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (preOrder)
+        if (preOrderVisible)
           Positioned(
-            top: 200,
-            left: 50,
-            child: Container(
-              width: 100,
-              height: 100,
-              color: Colors.red,
+            top: 175,
+            left: 15,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  preOrderVisible = false;
+                });
+              },
+              child: SizedBox(
+                width: 330,
+                height: 100,
+                child: Center(
+                  child: Text(
+                    'Pre Order: $preOrderRecorrido',
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 56, 71, 98),
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-        if (inOrder)
+        if (inOrderVisible)
           Positioned(
-            top: 200,
-            left: 50,
-            child: Container(
-              width: 100,
-              height: 100,
-              color: Colors.green,
+            top: 175,
+            left: 15,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  inOrderVisible = false;
+                });
+              },
+              child: SizedBox(
+                width: 330,
+                height: 100,
+                child: Center(
+                  child: Text(
+                    'In Order: $inOrderRecorrido',
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 56, 71, 98),
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-        if (postOrder)
+        if (postOrderVisible)
           Positioned(
-            top: 200,
-            left: 50,
-            child: Container(
-              width: 100,
-              height: 100,
-              color: Colors.blue,
+            top: 175,
+            left: 15,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  postOrderVisible = false;
+                });
+              },
+              child: SizedBox(
+                width: 330,
+                height: 100,
+                child: Center(
+                  child: Text(
+                    'Post Order: $postOrderRecorrido',
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 56, 71, 98),
+                      fontSize: 22,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         Positioned(
@@ -111,8 +171,8 @@ class _BotonDesplegableState extends State<BotonDesplegable> {
                 color: const Color.fromARGB(141, 255, 255, 255),
                 borderRadius: const BorderRadius.all(Radius.circular(20.0)),
                 border: Border.all(
-                  color: const Color.fromARGB(255, 39, 46, 97), // Color del borde
-                  width: 4.0, // Ancho del borde
+                  color: const Color.fromARGB(255, 39, 46, 97),
+                  width: 4.0,
                 ),
               ),
               child: Column(
@@ -121,12 +181,9 @@ class _BotonDesplegableState extends State<BotonDesplegable> {
                   ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                        const Color.fromARGB(255, 52, 56, 102),
-                      ),
+                          const Color.fromARGB(255, 52, 56, 102)),
                     ),
-                    onPressed: () {
-                      _alterna('preOrder');
-                    },
+                    onPressed: togglePreOrder,
                     child: const Text(
                       'Pre Order',
                       style: TextStyle(
@@ -140,13 +197,10 @@ class _BotonDesplegableState extends State<BotonDesplegable> {
                   ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                        const Color.fromARGB(0, 0, 0, 0),
-                      ),
+                          const Color.fromARGB(0, 0, 0, 0)),
                       elevation: MaterialStateProperty.all(0),
                     ),
-                    onPressed: () {
-                      _alterna('inOrder');
-                    },
+                    onPressed: toggleInOrder,
                     child: const Text(
                       'In Order',
                       style: TextStyle(
@@ -160,12 +214,9 @@ class _BotonDesplegableState extends State<BotonDesplegable> {
                   ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                        const Color.fromARGB(255, 52, 56, 102),
-                      ),
+                          const Color.fromARGB(255, 52, 56, 102)),
                     ),
-                    onPressed: () {
-                      _alterna('postOrder');
-                    },
+                    onPressed: togglePostOrder,
                     child: const Text(
                       'Post Order',
                       style: TextStyle(

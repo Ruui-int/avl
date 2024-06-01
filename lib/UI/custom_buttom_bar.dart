@@ -1,5 +1,4 @@
 import 'package:arbol_avl/UI/custom_shape.dart';
-import 'package:arbol_avl/main/main.dart';
 import 'package:arbol_avl/model/avl.dart';
 import 'package:flutter/material.dart';
 
@@ -8,8 +7,6 @@ class BottomBar extends StatelessWidget {
  TextEditingController controller;
   late ArbolAvl arbol;
   double? clave;
-
-  final GlobalKey<MainState> mainKey = GlobalKey<MainState>();
 
   BottomBar({super.key, required this.controller, required this.arbol});
 
