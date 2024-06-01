@@ -1,5 +1,3 @@
-// ignore: file_names
-// ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
 import 'nodo.dart';
 import 'avl.dart';
@@ -39,7 +37,7 @@ class ArbolPainter extends CustomPainter {
         ..strokeWidth = 3;
 
       Paint circuloBordeBuscanodo = Paint()
-        ..color = Color.fromARGB(255, 217, 179, 13)
+        ..color = const Color.fromARGB(255, 217, 179, 13)
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke
         ..strokeWidth = 3;
@@ -51,7 +49,7 @@ class ArbolPainter extends CustomPainter {
         ..strokeWidth = 0;
 
       Paint linea = Paint()
-        ..color = Color.fromARGB(255, 71, 147, 151)
+        ..color = const Color.fromARGB(255, 71, 147, 151)
         ..strokeCap = StrokeCap.round
         ..strokeWidth = 3;
 
@@ -162,13 +160,14 @@ class ArbolPainter extends CustomPainter {
   double ajustarIzqAux(Nodo nodo, double ajustarIzq) {
     double extra = ajustarIzq;
     extra = diametro * 1.65;
-    extra = extra;
     if (nodo.nodoDerecho != null) {
-      extra = extra - 10 + ajustarIzqAux(nodo.nodoDerecho!, extra);
+      extra = extra - 5 + ajustarIzqAux(nodo.nodoDerecho!, extra);
     }
     if (nodo.nodoIzquierdo != null) {
       extra = extra - 15 + ajustarIzqAux(nodo.nodoIzquierdo!, extra);
     }
     return extra;
   }
+
+
 }

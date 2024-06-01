@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class BottomBar extends StatelessWidget {
-  final TextEditingController controller = TextEditingController();
+ TextEditingController controller;
   late ArbolAvl arbol;
   double? clave;
 
   final GlobalKey<MainState> mainKey = GlobalKey<MainState>();
 
-  BottomBar({super.key, required this.arbol});
+  BottomBar({super.key, required this.controller, required this.arbol});
 
 
   @override
@@ -58,7 +58,9 @@ class BottomBar extends StatelessWidget {
                         onPressed: () {
                           String claveString = controller.text;
                           int clave = int.tryParse(claveString) ?? 0;
-                          arbol.insertarNodo(clave); // Insertar nodo
+                          if (claveString != "") { 
+                          arbol.insertarNodo(clave);
+                           } // Insertar nodo
                           controller.clear();
                         },
                         icon: const Icon(
@@ -67,20 +69,17 @@ class BottomBar extends StatelessWidget {
                           size: 30,
                         ),
                       ),
-
-                      const SizedBox(
-                        width: 0,
-
+                      
                         ///Botón para eliminar
-                      ),
+                      
                       IconButton(
                         onPressed: () {
                           String claveString = controller.text;
                           int clave = int.tryParse(claveString) ?? 0;
-                          /* if (clave != "") { */
+                          if (claveString != "") { 
                           arbol.eliminarNodo(clave);
                           controller.clear();
-                          /* } */
+                           } 
                         },
                         icon: const Icon(
                           Icons.delete_outline_outlined,
@@ -101,7 +100,7 @@ class BottomBar extends StatelessWidget {
                           if (claveString != "") {
                             arbol.buscar(clave);
                           }
-                          
+                          controller.clear();
                         },
                         icon: const Icon(
                           Icons.search,
@@ -154,7 +153,7 @@ class BottomBar extends StatelessWidget {
             left: 116,
             child: Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 20),
               height: 60,
               width: 120,
               decoration: const BoxDecoration(

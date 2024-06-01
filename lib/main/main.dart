@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:arbol_avl/UI/custom_appbar.dart';
 import 'package:arbol_avl/UI/custom_buttom_bar.dart';
 import 'package:arbol_avl/model/arbol_painter.dart';
 import 'package:arbol_avl/model/avl.dart';
-import 'package:flutter/material.dart';
+import 'package:arbol_avl/UI/boton_desplegable.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,35 +26,30 @@ class Main extends StatefulWidget {
 }
 
 class MainState extends State<Main> {
-
+  bool masBotones = false;
   late ArbolAvl arbol;
   late ArbolPainter painter;
+  final TextEditingController _controller = TextEditingController();
 
   MainState() {
-    arbol = ArbolAvl(); //
-    painter = ArbolPainter(arbol); //
+    arbol = ArbolAvl(onUpdate: actualizarEstado);
+    painter = ArbolPainter(arbol);
   }
 
   void actualizarEstado() {
-    arbol.resetArbol();
-    setState(() {
-      // ignore: avoid_print  
-    });
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    // Recopilar los nodos del árbol binario
-
     return Scaffold(
       backgroundColor: const Color.fromARGB(249, 247, 248, 250),
       body: Stack(
         children: [
           InteractiveViewer(
-            boundaryMargin: const EdgeInsets.all(
-                double.infinity), // Margen adicional alrededor del contenido
-            minScale: 0.1, // Escala mínima permitida
-            maxScale: 2.0, // Escala máxima permitida
+            boundaryMargin: const EdgeInsets.all(double.infinity),
+            minScale: 0.1,
+            maxScale: 2.0,
             child: Padding(
               padding: const EdgeInsets.only(top: 250),
               child: CustomPaint(
@@ -63,24 +59,29 @@ class MainState extends State<Main> {
               ),
             ),
           ),
-          // Fondo de la página
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               CustomAppBar(),
               const SizedBox(height: 115),
               Expanded(
-                // Para ocupar todo el espacio restante
                 child: Container(
                   alignment: Alignment.bottomCenter,
-                  child: BottomBar(arbol: arbol),
+                  child: BottomBar(arbol: arbol, controller: _controller,),
                 ),
               ),
               const SizedBox(height: 10),
             ],
           ),
-          // InteractiveViewer superpuesto
-        ],
+
+          BotonDesplegable(),
+
+
+
+
+
+        ],  
+           
       ),
     );
   }

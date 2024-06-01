@@ -1,12 +1,15 @@
 import 'dart:math';
-import 'package:arbol_avl/model/nodo.dart';
 import 'dart:async';
+import 'package:arbol_avl/model/nodo.dart';
 
 class ArbolAvl {
-  
   Nodo? raiz;
   Nodo? ultimoNodoAgregado;
   Nodo? buscandoNodo;
+
+  final Function onUpdate;
+
+  ArbolAvl({required this.onUpdate});
 
   void insertarNodo(int clave) {
     Nodo nodo = Nodo(clave);
@@ -16,6 +19,7 @@ class ArbolAvl {
     }
     nodo.ultimo = true;
     ultimoNodoAgregado = nodo;
+    onUpdate();
   }
 
   Nodo? _insertar(Nodo? raiz, Nodo nodo) {
@@ -93,6 +97,7 @@ class ArbolAvl {
 
   void eliminarNodo(int clave) {
     raiz = _eliminar(raiz, clave);
+    onUpdate(); // Notifica a la UI que el árbol ha sido actualizado
   }
 
   Nodo? _eliminar(Nodo? raiz, int clave) {
@@ -129,50 +134,45 @@ class ArbolAvl {
 
   void resetArbol() {
     raiz = null;
+    onUpdate(); // Notifica a la UI que el árbol ha sido reseteado
   }
 
-  void buscar(int clave) {
+  Future<void> buscar(int clave) async {
     if (buscandoNodo != null) {
       buscandoNodo!.buscando = false;
-    _buscar(raiz, clave).then((nodoEncontrado) {
-    });
-  }
+    }
+    buscandoNodo = await _buscar(raiz, clave);
+    onUpdate(); // Notifica a la UI que el nodo buscado ha cambiado
   }
 
   Future<Nodo?> _buscar(Nodo? nodo, int clave) async {
-    int time = 1000;
+    int tiempo = 300;
 
-    if (nodo == null)
-      return null; 
-  
+    if (nodo == null) return null;
+
     if (buscandoNodo != null) {
       buscandoNodo!.buscando = false;
     }
 
-    await Future.delayed(Duration(milliseconds: time));
-    actualizarEstado();
-    actualizarEstado();
-    
+    await Future.delayed(Duration(milliseconds: tiempo));
+
     nodo.buscando = true;
     buscandoNodo = nodo;
+    onUpdate(); // Notifica a la UI que el nodo en búsqueda ha cambiado
 
-    await Future.delayed(Duration(milliseconds: time));
-    actualizarEstado();
-    actualizarEstado();
+    await Future.delayed(Duration(milliseconds: tiempo));
+
     if (clave.compareTo(nodo.clave) < 0) {
-      
+      nodo.buscando = false;
+      onUpdate(); // Notifica a la UI que el nodo en búsqueda ha cambiado
       return await _buscar(nodo.nodoIzquierdo, clave);
     } else if (clave.compareTo(nodo.clave) > 0) {
-      
+      nodo.buscando = false;
+      onUpdate(); // Notifica a la UI que el nodo en búsqueda ha cambiado
       return await _buscar(nodo.nodoDerecho, clave);
     } else {
-      
       return nodo;
     }
-  }
-
-  void actualizarEstado() {
-    /* mainKey.currentState?.cambiarEstado(); */
   }
 
   void _imprimirInOrden(Nodo? nodo) {
@@ -183,6 +183,8 @@ class ArbolAvl {
       print('${nodo.clave} ');
       _imprimirInOrden(nodo.nodoDerecho);
     }
+
+
+    
   }
 }
-
